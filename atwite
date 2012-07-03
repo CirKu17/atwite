@@ -1,0 +1,130 @@
+#!/bin/bash
+
+# Edit if you want to add a subfolder to the default Dropbox location for repos
+
+dropbox_path="~/Dropbox"
+local_path=`pwd`
+
+init() {
+    
+    echo "User ID: "
+    read userid
+    echo "Project Title: "
+    read title
+    
+    mkdir atwite_config
+    mkdir $dropbox_path/$title
+    
+    echo -e "$title\n$userid" > atwite_config/config
+    
+    ruby atwite.rb init $title
+    
+}
+
+commit () {
+    
+    userid=` awk 'NR==2' $local_path/atwite_config/config`
+    ruby atwite.rb commit $userid
+    
+}
+
+add () {
+
+    for i in "${@:2}"; do
+    
+        echo "$i" >> atwite_config/index
+    
+    done
+}
+
+push () {
+
+    if [ -e "$local_path/atwite_config/config" ]; then
+        title=` awk 'NR==1' $local_path/atwite_config/config`
+    else
+        echo "Error: no config dir found"
+        exit
+    fi
+    
+    for file in `cat atwite_config/index`; do
+        cp $file "$dropbox_path/$title/"
+    done
+    
+    echo "Pushing done."
+}
+
+flush () {
+
+    if [ -e "$local_path/atwite_config/config" ]; then
+        rm $local_path/point.yaml
+    else
+        echo "Error: no point file found"
+    fi
+    
+    if [ -e "$local_path/atwite_config/config" ]; then
+        rm -r $local_path/atwite_config
+    else        
+        echo "Error: no config dir found"
+        exit
+    fi        
+    
+}
+
+remove () {
+    
+    flush
+    
+    title=` awk 'NR==1' $local_path/atwite_config/config`
+    rm -r $dropbox_path/$title
+    
+}
+
+clone () {
+    
+    echo "What's the name of the repo to clone?"
+    read repo
+    
+    if [ -e "$dropbox_path/$repo" ]; then
+        cp -R  "$dropbox_path/$repo" $local_path
+    else
+        echo "Repo does not exist"
+    fi
+    
+    
+}
+
+usage () {
+    
+    echo "
+    init :  initialize new repo
+    add :   add files to the indexing list
+    push :  copy the files on the indexing list to Dropbox repo
+    commit: add a commit to the point file
+    flush:  delete local repo files
+    remove: delete local repo files and Dropbox folder
+    clone:  copy a repo from Dropbox to local folder
+    
+    "
+    
+}
+
+case "$1" in
+
+    "init") init
+            ;;
+    "add")  add "$@"
+            ;;
+    "push") push
+            ;;
+    "commit")   commit
+            ;;
+    "flush")    flush
+            ;;
+    "remove")   remove
+            ;;
+    "clone")    clone
+            ;;
+    *) usage
+        exit
+
+esac
