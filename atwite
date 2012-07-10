@@ -43,7 +43,7 @@ push () {
         title=` awk 'NR==1' $local_path/atwite_config/config`
     else
         echo "Error: no config dir found"
-        exit
+        exit 1
     fi
     
     for file in `cat atwite_config/index`; do
@@ -65,7 +65,7 @@ flush () {
         rm -r $local_path/atwite_config
     else        
         echo "Error: no config dir found"
-        exit
+        exit 1
     fi        
     
 }
@@ -93,6 +93,18 @@ clone () {
     
 }
 
+generate-html () {
+    
+    if [ -e "$local_path/atwite_config/config" ]; then
+        rm $local_path/point.yaml
+    else
+        echo "Error: no point file found"
+        exit 1
+    
+    ruby atwite.rb generate-html    
+    
+}
+
 usage () {
     
     echo "
@@ -103,6 +115,7 @@ usage () {
     flush:  delete local repo files
     remove: delete local repo files and Dropbox folder
     clone:  copy a repo from Dropbox to local folder
+    generate-html:  generate an html file from the local point file
     
     "
     

@@ -50,6 +50,29 @@ def commit(userid)
   write(title,tags,commits,description)
 end
 
+def generate_html
+  fileHtml = File.new("point.html", "w+")
+  fileHtml.puts "
+  <!DOCTYPE html><html><body>
+  <title>#{read['title']}</title>
+  <h1>#{read['title']}</h1>
+  <i>#{read['description']}</i>
+  <h2>Tags</h2>
+  <p>"
+  read['tags'].each do |tag|             
+  fileHtml.puts "#{tag}"
+  end
+  fileHtml.puts "
+  </p>
+  <h2>Commits</h2>
+  <ul>"
+  read['commits'].each do |commit|             
+  fileHtml.puts "<li>#{commit}</li>"
+  end  
+  fileHtml.puts "</ul></body></html>"
+  
+end
+
 
 unless ARGV.empty? 
   if ARGV.first == "write"
@@ -60,6 +83,8 @@ unless ARGV.empty?
     init(ARGV[1])
   elsif ARGV.first == "commit"
     commit(ARGV[1])
+  elsif ARGV.first == "generate-html"
+    generate_html    
   end
 else
   abort("No proper arguments passed")

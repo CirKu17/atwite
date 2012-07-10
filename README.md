@@ -3,7 +3,7 @@ atwite
 _the reproachable content tracker_
 
 
- atwite is a simple content tracker that changes a folder with code in it to a Dropbox-synchronized repo.
+ atwite is a simple content tracker that changes a folder with code in it into a Dropbox-synchronized repo.
  It uses YAML to create a _point file_ that looks like this
  
 <pre>
