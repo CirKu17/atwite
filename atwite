@@ -55,7 +55,7 @@ push () {
 
 flush () {
 
-    if [ -e "$local_path/atwite_config/config" ]; then
+    if [ -e "$local_path/point.yaml" ]; then
         rm $local_path/point.yaml
     else
         echo "Error: no point file found"
@@ -95,13 +95,12 @@ clone () {
 
 generate-html () {
     
-    if [ -e "$local_path/atwite_config/config" ]; then
-        rm $local_path/point.yaml
-    else
+    if [ -e "$local_path/point.yaml" ]; then
         echo "Error: no point file found"
-        exit 1
-    
-    ruby atwite.rb generate-html    
+    else
+        ruby atwite.rb generate-html
+        echo "Done"
+    fi    
     
 }
 
@@ -136,6 +135,8 @@ case "$1" in
     "remove")   remove
             ;;
     "clone")    clone
+            ;;
+    "generate-html")    generate-html
             ;;
     *) usage
         exit

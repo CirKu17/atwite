@@ -70,6 +70,7 @@ def generate_html
   fileHtml.puts "<li>#{commit}</li>"
   end  
   fileHtml.puts "</ul></body></html>"
+  fileHtml.close()
   
 end
 
